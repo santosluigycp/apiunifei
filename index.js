@@ -2,14 +2,14 @@ const express = require('express');
 const { Client } = require('pg');
 const cors = require('cors');
 const bodyparser = require('body-parser');
-const dotenv = require('dotenv');
+const config = require("./config")
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(bodyparser.json());
-dotenv.config();
-const connectionString = process.env.DATABASE_URL;
+
+const connectionString = config.DATABASE_URL;
 const client = new Client(connectionString);
 
 client.connect((err) => {
@@ -28,10 +28,6 @@ app.get('/', (req, res) => {
   console.log('Response ok.');
   res.status(200).send('Ok – Servidor disponível.');
 });
-
-app.listen(process.env.PORT, () =>
-  console.log('Servidor funcionando na porta ' + process.env.PORT)
-);
 
 app.get('/usuarios', (req, res) => {
   try {
@@ -141,5 +137,9 @@ app.put('/usuarios/:id', (req, res) => {
     console.error(erro);
   }
 });
+
+app.listen(config.PORT, () =>
+  console.log('Servidor funcionando na porta ' + config.PORT)
+);
 
 module.exports = app;
